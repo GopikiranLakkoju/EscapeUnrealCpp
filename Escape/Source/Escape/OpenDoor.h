@@ -20,13 +20,18 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	// Opens/Close door
+	void OpenOrCloseDoor(int);
 
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 private:
-	UPROPERTY(VisibleAnywhere)
-		float doorOpenYawAngle = 90.0;
 	UPROPERTY(EditAnywhere)
 		ATriggerVolume* PressureSwitch;
+	UPROPERTY(EditAnywhere)
+		AActor* Roamer;
+	AActor* Owner;
+	const float YawAngleOpen = -180.0;
+	const float YawAngleClose = 90.0;
 };
