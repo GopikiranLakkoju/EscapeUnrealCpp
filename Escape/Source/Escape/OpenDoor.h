@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Engine/TriggerVolume.h"
 #include "OpenDoor.generated.h"
 
 
@@ -14,7 +15,7 @@ class ESCAPE_API UOpenDoor : public UActorComponent
 
 public:	
 	// Sets default values for this component's properties
-	UOpenDoor();
+	UOpenDoor();	
 
 protected:
 	// Called when the game starts
@@ -23,7 +24,9 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-		
-	
+private:
+	UPROPERTY(VisibleAnywhere)
+		float doorOpenYawAngle = 90.0;
+	UPROPERTY(EditAnywhere)
+		ATriggerVolume* PressureSwitch;
 };
