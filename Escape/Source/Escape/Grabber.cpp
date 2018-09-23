@@ -1,11 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Grabber.h"
-#include "GameFramework/PlayerController.h"
-#include "Engine/World.h"
-#include "DrawDebugHelpers.h"
-
-#define OUT
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -102,7 +97,6 @@ void UGrabber::Grab()
 	}
 }
 
-
 void UGrabber::Release()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Key release binging working"));
@@ -114,4 +108,3 @@ void UGrabber::PrintLog(FString printString)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%s"), *printString));
 }
-
