@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Components/InputComponent.h"
+#include "Components/PrimitiveComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Engine/Engine.h"
 #include "Grabber.generated.h"
 
 
@@ -20,18 +22,35 @@ public:
 
 protected:
 	// Called when the game starts
-	virtual void BeginPlay() override;
+	virtual void BeginPlay() override;	
 
 public:	
 	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;	
 
 private:
+	/// Variables
+	// Distance to stretch the ray casting from the mid of the body in cm
 	float FarReach = 100.0;
 	UWorld* World = GetWorld();
 	AActor* Player = GetOwner();
 	UPhysicsHandleComponent* PhysicsHandler = nullptr;
 	UInputComponent* PawnInput = nullptr;
+
+	/// Methods
 	// Ray-cast and grab what's in the reach
 	void Grab();
+	// Ray-cast and grab release what's in the reach
+	void Release();
+	// Line tracing though objects with Physics enabled
+	FHitResult LineTracingThroughObjectChannel();
+	// Deals with both setting up Physics and input component
+	void FindPhysicsHandleAndSetupInputComponent();
+	// Gets the line trace based on location and rotation
+	FVector GetLineTraceEnd(OUT FVector, OUT FRotator);
+	// Screen logging
+	void PrintLog(FString);
+	
+	/// Constants
+	const FString GRAB = "Grab";
 };
