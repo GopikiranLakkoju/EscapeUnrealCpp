@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Components/InputComponent.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Grabber.generated.h"
 
 
@@ -26,5 +28,10 @@ public:
 
 private:
 	float FarReach = 100.0;
-	
+	UWorld* World = GetWorld();
+	AActor* Player = GetOwner();
+	UPhysicsHandleComponent* PhysicsHandler = nullptr;
+	UInputComponent* PawnInput = nullptr;
+	// Ray-cast and grab what's in the reach
+	void Grab();
 };

@@ -23,8 +23,24 @@ void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	// Look for attached Physics handler
+	PhysicsHandler = Player->FindComponentByClass<UPhysicsHandleComponent>();
+	// Looks for input component that is attached on begin play
+	PawnInput = Player->FindComponentByClass<UInputComponent>();
+
+	if (PhysicsHandler || PawnInput)
+	{
+		PawnInput->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s is missing physics handle Or Input component"), *Player->GetFName().ToString());
+	}
+}
+
+void UGrabber::Grab()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Key press binging working"));
 }
 
 
@@ -34,15 +50,25 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	FVector playerLocation;
 	FRotator playerRotation;
-	UWorld* world = GetWorld();
 	// Gets the  player view point
-	world->GetFirstPlayerController()->GetPlayerViewPoint(OUT playerLocation, OUT playerRotation);
+	World->GetFirstPlayerController()->GetPlayerViewPoint(OUT playerLocation, OUT playerRotation);
 
 	//UE_LOG(LogTemp, Warning, TEXT("Player view point location %s rotation %s"), *playerLocation.ToString(), *playerRotation.ToString());
 
 	FVector lineTraceEnd = playerLocation + playerRotation.Vector() * FarReach;
-
+		
 	// Debug visual line tracing of viewpoint
-	DrawDebugLine(world, playerLocation, lineTraceEnd, FColor(255, 0, 0), false, 0.0, 0.0, 10.0);
+	DrawDebugLine(World, playerLocation, lineTraceEnd, FColor(255, 0, 0), false, 0.0, 0.0, 10.0);
+
+	/// line trace(aka ray casting) out to reach distance
+	FHitResult hit;
+	// collision parameters
+	FCollisionQueryParams collisionQueryParams(FName(TEXT("")), false, Player);
+	World->LineTraceSingleByObjectType(OUT hit, playerLocation, lineTraceEnd, FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody), collisionQueryParams);
+	AActor* actorThatWasHit = hit.GetActor();
+	if (actorThatWasHit)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Actor that was collided %s"), *(actorThatWasHit->GetName()));
+	}	
 }
 
