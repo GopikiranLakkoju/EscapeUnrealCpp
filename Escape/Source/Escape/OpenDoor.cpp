@@ -1,9 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "OpenDoor.h"
-#include "GameFramework/Actor.h"
-#include "GameFramework/PlayerController.h"
-#include "Engine/World.h"
 
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor()
@@ -39,8 +36,8 @@ void UOpenDoor::OpenOrCloseDoor(int yawValue)
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if (PressureSwitch->IsOverlappingActor(Roamer))
+	// initial pressure load with actor PressureSwitch->IsOverlappingActor(Roamer)
+	if (MassOfActorsOnPressureSwitch() >= 30.0)
 	{
 		OpenOrCloseDoor(YawAngleClose);
 	}
@@ -50,3 +47,24 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	}
 }
 
+float UOpenDoor::MassOfActorsOnPressureSwitch()
+{
+	TArray<AActor*> overLappingActors;
+	PressureSwitch->GetOverlappingActors(OUT overLappingActors);
+	float massInWhole = 0.0;
+	for (const AActor* actor : overLappingActors)
+	{
+		UPrimitiveComponent* component = actor->FindComponentByClass<UPrimitiveComponent>();
+		if (component)
+		{
+			massInWhole += component->GetMass();
+		}		
+	}
+	PrintLogOnOpenLog(FString::SanitizeFloat(massInWhole));
+	return massInWhole;
+}
+
+void UOpenDoor::PrintLogOnOpenLog(FString printString)
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *printString);
+}

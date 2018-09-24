@@ -8,7 +8,7 @@ UGrabber::UGrabber()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-	UE_LOG(LogTemp, Warning, TEXT("Grabber reporting for duty"));
+	PrintLogOnOpenLog("Grabber reporting for duty");
 }
 
 
@@ -86,7 +86,7 @@ FHitResult UGrabber::LineTracingThroughObjectChannel()
 void UGrabber::Grab()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Key press binging working"));
-	PrintLog("Key press binging working");
+	PrintLogOnScreen("Key press binging working");
 	FHitResult hit = LineTracingThroughObjectChannel();
 	// if no actor is found it gonna loop to get component and application would crash, learned it in a hard way
 	if (hit.GetActor())
@@ -100,11 +100,16 @@ void UGrabber::Grab()
 void UGrabber::Release()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Key release binging working"));
-	PrintLog("Key release binging working");
+	PrintLogOnScreen("Key release binging working");
 	PhysicsHandler->ReleaseComponent();
 }
 
-void UGrabber::PrintLog(FString printString)
+void UGrabber::PrintLogOnScreen(FString printString)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%s"), *printString));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("%s"), *printString));
+}
+
+void UGrabber::PrintLogOnOpenLog(FString printString)
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *printString);
 }

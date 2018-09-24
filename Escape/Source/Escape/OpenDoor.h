@@ -4,9 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Components/PrimitiveComponent.h"
 #include "Engine/TriggerVolume.h"
+#include "GameFramework/Actor.h"
+#include "GameFramework/PlayerController.h"
+#include "Engine/World.h"
 #include "OpenDoor.generated.h"
 
+#define OUT
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ESCAPE_API UOpenDoor : public UActorComponent
@@ -26,7 +31,9 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 private:
+	/// Properties
 	UPROPERTY(EditAnywhere)
 		ATriggerVolume* PressureSwitch;
 	UPROPERTY(EditAnywhere)
@@ -34,4 +41,8 @@ private:
 	AActor* Owner;
 	const float YawAngleOpen = -180.0;
 	const float YawAngleClose = 90.0;
+
+	/// methods
+	float MassOfActorsOnPressureSwitch();
+	void PrintLogOnOpenLog(FString);
 };

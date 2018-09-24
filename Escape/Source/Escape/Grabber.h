@@ -53,7 +53,8 @@ private:
 	// Gets the line trace based on location and rotation
 	FVector GetLineTraceEnd(OUT FVector, OUT FRotator);
 	// Screen logging
-	void PrintLog(FString);
+	void PrintLogOnScreen(FString);
+	void PrintLogOnOpenLog(FString);
 	
 	/// Constants
 	const FString GRAB = "Grab";
