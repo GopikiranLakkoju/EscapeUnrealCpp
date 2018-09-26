@@ -13,6 +13,8 @@
 
 #define OUT
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnOpenRequest);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ESCAPE_API UOpenDoor : public UActorComponent
 {
@@ -31,16 +33,21 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnOpenRequest OnOpenRequest;
 
 private:
 	/// Properties
 	UPROPERTY(EditAnywhere)
-		ATriggerVolume* PressureSwitch;
+		ATriggerVolume* PressureSwitch = nullptr;
 	UPROPERTY(EditAnywhere)
-		AActor* Roamer;
+		AActor* Roamer = nullptr;
 	AActor* Owner;
-	const float YawAngleOpen = -180.0;
-	const float YawAngleClose = 90.0;
+	// 90d
+	const float YawAngleOpen = 90.0;
+	// -180d
+	const float YawAngleClose = -180.0;
 
 	/// methods
 	float MassOfActorsOnPressureSwitch();

@@ -92,8 +92,11 @@ void UGrabber::Grab()
 	if (hit.GetActor())
 	{
 		UPrimitiveComponent* componentToGrab = hit.GetComponent();
-		// attach physics handle
-		PhysicsHandler->GrabComponentAtLocation(componentToGrab, NAME_None, componentToGrab->GetOwner()->GetActorLocation());
+		if (PhysicsHandler)
+		{
+			// attach physics handle
+			PhysicsHandler->GrabComponentAtLocation(componentToGrab, NAME_None, componentToGrab->GetOwner()->GetActorLocation());
+		}		
 	}
 }
 
@@ -101,7 +104,10 @@ void UGrabber::Release()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Key release binging working"));
 	PrintLogOnScreen("Key release binging working");
-	PhysicsHandler->ReleaseComponent();
+	if (PhysicsHandler)
+	{
+		PhysicsHandler->ReleaseComponent();
+	}	
 }
 
 void UGrabber::PrintLogOnScreen(FString printString)
