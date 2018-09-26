@@ -25,20 +25,15 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	FVector playerLocation;
 	FRotator playerRotation;
-	FVector lineTraceEnd = GetLineTraceEnd(playerLocation, playerRotation);
-	PhysicsHandler->SetTargetLocation(lineTraceEnd);
-}
-
-FVector UGrabber::GetLineTraceEnd(OUT FVector playerLocation, OUT FRotator playerRotation)
-{
 	// Gets the  player view point
 	World->GetFirstPlayerController()->GetPlayerViewPoint(OUT playerLocation, OUT playerRotation);
 
 	// Logs player rotation and location on 3dspace
 	//UE_LOG(LogTemp, Warning, TEXT("Player view point location %s rotation %s"), *playerLocation.ToString(), *playerRotation.ToString());
 
-	// Distance between mid of the body and length its extends
-	return playerLocation + playerRotation.Vector() * FarReach;
+	// Distance between mid of the body and length its extends	
+	FVector lineTraceEnd = playerLocation + playerRotation.Vector() * FarReach;
+	PhysicsHandler->SetTargetLocation(lineTraceEnd);
 }
 
 void UGrabber::FindPhysicsHandleAndSetupInputComponent()
@@ -47,7 +42,7 @@ void UGrabber::FindPhysicsHandleAndSetupInputComponent()
 	PhysicsHandler = Player->FindComponentByClass<UPhysicsHandleComponent>();
 	// Looks for input component that is attached on begin play
 	PawnInput = Player->FindComponentByClass<UInputComponent>();
-
+		
 	if (PhysicsHandler || PawnInput)
 	{
 		PawnInput->BindAction(*GRAB, IE_Pressed, this, &UGrabber::Grab);
@@ -63,8 +58,11 @@ FHitResult UGrabber::LineTracingThroughObjectChannel()
 {
 	FVector playerLocation;
 	FRotator playerRotation;
+
+	// Gets the  player view point
+	World->GetFirstPlayerController()->GetPlayerViewPoint(OUT playerLocation, OUT playerRotation);	
 	
-	FVector lineTraceEnd = GetLineTraceEnd(OUT playerLocation, OUT playerRotation);
+	FVector lineTraceEnd = playerLocation + playerRotation.Vector() * FarReach;;
 
 	// Debug visual line tracing of viewpoint
 	//DrawDebugLine(World, playerLocation, lineTraceEnd, FColor(255, 0, 0), false, 0.0, 0.0, 10.0);
@@ -74,26 +72,27 @@ FHitResult UGrabber::LineTracingThroughObjectChannel()
 	FCollisionQueryParams collisionQueryParams(FName(TEXT("")), false, Player);
 	// line tracing (aka ray casting) based on player location and distance of the body to which it collides(Physics enabled bodies)
 	World->LineTraceSingleByObjectType(OUT hitResult, playerLocation, lineTraceEnd, FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody), collisionQueryParams);
-	AActor* actorThatWasHit = hitResult.GetActor();
-	if (actorThatWasHit)
-	{
-		// commented just 
-		//UE_LOG(LogTemp, Warning, TEXT("Actor that was collided %s"), *(actorThatWasHit->GetName()));
-	}
+	
+	//AActor* actorThatWasHit = hitResult.GetActor();
+	//if (actorThatWasHit)
+	//{
+	//	// commented just 
+	//	//UE_LOG(LogTemp, Warning, TEXT("Actor that was collided %s"), *(actorThatWasHit->GetName()));
+	//}
 	return hitResult;
 }
 
 void UGrabber::Grab()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Key press binging working"));
-	PrintLogOnScreen("Key press binging working");
+	
 	FHitResult hit = LineTracingThroughObjectChannel();
 	// if no actor is found it gonna loop to get component and application would crash, learned it in a hard way
 	if (hit.GetActor())
-	{
-		UPrimitiveComponent* componentToGrab = hit.GetComponent();
+	{		UPrimitiveComponent* componentToGrab = hit.GetComponent();
 		if (PhysicsHandler)
 		{
+			PrintLogOnScreen("Key press binging working");
 			// attach physics handle
 			PhysicsHandler->GrabComponentAtLocation(componentToGrab, NAME_None, componentToGrab->GetOwner()->GetActorLocation());
 		}		

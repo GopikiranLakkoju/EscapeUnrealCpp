@@ -68,7 +68,7 @@ float UOpenDoor::MassOfActorsOnPressureSwitch()
 			massInWhole += component->GetMass();
 		}
 	}
-	PrintLogOnOpenLog(FString::SanitizeFloat(massInWhole));
+	//PrintLogOnOpenLog(FString::SanitizeFloat(massInWhole));
 	return massInWhole;
 }
 

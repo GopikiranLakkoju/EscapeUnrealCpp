@@ -50,8 +50,6 @@ private:
 	FHitResult LineTracingThroughObjectChannel();
 	// Deals with both setting up Physics and input component
 	void FindPhysicsHandleAndSetupInputComponent();
-	// Gets the line trace based on location and rotation
-	FVector GetLineTraceEnd(OUT FVector, OUT FRotator);
 	// Screen logging
 	void PrintLogOnScreen(FString);
 	void PrintLogOnOpenLog(FString);
