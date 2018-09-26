@@ -24,18 +24,21 @@ void UOpenDoor::BeginPlay()
 	Owner = GetOwner();
 }
 
-void UOpenDoor::OpenOrCloseDoor(int yawValue)
+void UOpenDoor::OpenOrCloseDoor()
 {
 	// pitch=y, yaw=z, roll=x
-	FRotator rotator = FRotator(0.00, yawValue, 0.00);
+	//FRotator rotator = FRotator(0.00, yawValue, 0.00);
 	if (Owner != nullptr)
 	{
-		if (yawValue == -180.0)
+		if (CanOpen)
 		{
-			OnOpenRequest.Broadcast();
-			return;
-		}		
-		Owner->SetActorRotation(rotator);
+			OnOpenRequest.Broadcast();			
+		}
+		else
+		{
+			OnCloseRequest.Broadcast();
+		}
+		//Owner->SetActorRotation(rotator);
 	}
 }
 
@@ -45,13 +48,15 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	// initial pressure load with actor PressureSwitch->IsOverlappingActor(Roamer)
-	if (MassOfActorsOnPressureSwitch() >= 30.0)
+	if (MassOfActorsOnPressureSwitch() >= TriggerMass)
 	{
-		OpenOrCloseDoor(YawAngleOpen);
+		CanOpen = true;
+		OpenOrCloseDoor();
 	}
 	else
 	{
-		OpenOrCloseDoor(YawAngleClose);
+		CanOpen = false;
+		OpenOrCloseDoor();
 	}
 }
 
