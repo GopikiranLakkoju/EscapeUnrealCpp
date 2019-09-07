@@ -94,7 +94,7 @@ void UGrabber::Grab()
 		{
 			PrintLogOnScreen("Key press binging working");
 			// attach physics handle
-			PhysicsHandler->GrabComponentAtLocation(componentToGrab, NAME_None, componentToGrab->GetOwner()->GetActorLocation());
+			PhysicsHandler->GrabComponentAtLocationWithRotation(componentToGrab, NAME_None, componentToGrab->GetOwner()->GetActorLocation(), componentToGrab->GetOwner()->GetActorRotation());
 		}		
 	}
 }

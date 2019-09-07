@@ -11,3 +11,6 @@ Escape/Content/StarterContent
 *.VC.opendb
 *.suo
 .vs
+
+#VS Code generated files
+*.vscode
